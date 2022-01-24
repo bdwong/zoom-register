@@ -1,0 +1,4 @@
+{
+   "api_key": "YOUR_JWT_API_KEY_HERE",
+   "api_secret": "YOUR_JWT_SECRET_HERE"
+}
