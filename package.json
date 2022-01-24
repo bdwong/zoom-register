@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brian D. Wong",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^8.3.0",
+    "jsonwebtoken": "^8.5.1"
+  }
 }
