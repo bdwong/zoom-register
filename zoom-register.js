@@ -89,6 +89,14 @@ attendees.command('batch')
       console.log(result.data);
    });
 
+attendees.command('list')
+   .description('list meeting registrants and links')
+   .argument('<meeting_id>', 'id of the meeting')
+   .action(async (meeting_id) => {
+      console.log(`list registrants for meeting ${meeting_id}`);
+      let result = await axios.get(`/meetings/${meeting_id}/registrants?page_size=300`);
+      console.log(result.data);
+   });
 
 // Set request defaults
 axios.defaults.baseURL = appconfig['base_url'];
