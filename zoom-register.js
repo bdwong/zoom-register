@@ -14,6 +14,25 @@ function getRegistrants(filename) {
    return neatCsv(csv);
 }
 
+// Basic error handling
+async function sendRequest(async_call) {
+   let response;
+   try {
+      response = await async_call();
+      console.log(`Response: ${response.status}`)
+   } catch(e) {
+      if (e.response) {
+         response = e.response;
+         console.log(`Response: ${response.status}`);
+      } else {
+         console.log(`Error: ${e.message}`);
+         throw e;
+      }
+   }
+   return response;
+}
+
+
 function generateJWT(appconfig, payload = {}) {
    let token = jwt.sign(payload, appconfig['api_secret'], {
       algorithm: 'HS256',
@@ -45,7 +64,7 @@ meetings.command('list')
    .description('list names and ids of upcoming meetings')
    .action(async () => {
       console.log(`List meetings`);
-      result = await axios.get(`/meetings`);
+      result = await sendRequest( () => {axios.get(`/meetings`)} );
       console.log(result.data)
    })
 
@@ -54,7 +73,7 @@ meetings.command('get')
    .argument('<meeting_id>', 'id of the meeting')
    .action(async (meeting_id) => {
       console.log(`Get meeting ${meeting_id}`);
-      result = await axios.get(`/meetings/${meeting_id}?type=upcoming&page_size=20`);
+      result = await sendRequest( () => {axios.get(`/meetings/${meeting_id}?type=upcoming&page_size=20`)} );
       console.log(result.data);
    })
 
@@ -69,11 +88,13 @@ attendees.command('single')
    .argument('<last_name>', 'last name of attendee')
    .action(async (meeting_id, email, first_name, last_name) => {
       console.log(`import ${first_name} ${last_name} <${email}> into meeting ${meeting_id}`);
-      result = await axios.post(`/meetings/${meeting_id}/registrants`, {
-         email: email,
-         first_name: first_name,
-         last_name: last_name,
-         status: 'approved'
+      result = await sendRequest( () => {
+         axios.post(`/meetings/${meeting_id}/registrants`, {
+            email: email,
+            first_name: first_name,
+            last_name: last_name,
+            status: 'approved'
+         })
       });
       console.log(result.data);
    });
@@ -85,7 +106,7 @@ attendees.command('batch')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
       let csv_data = neatCsv(attendee_csv)
-      let result = await axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data);
+      let result = await sendRequest( () => {axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data)} );
       console.log(result.data);
    });
 
@@ -94,7 +115,7 @@ attendees.command('list')
    .argument('<meeting_id>', 'id of the meeting')
    .action(async (meeting_id) => {
       console.log(`list registrants for meeting ${meeting_id}`);
-      let result = await axios.get(`/meetings/${meeting_id}/registrants?page_size=300`);
+      let result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300`)} );
       console.log(result.data);
    });
 
