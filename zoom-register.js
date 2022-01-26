@@ -64,7 +64,7 @@ meetings.command('list')
    .description('list names and ids of upcoming meetings')
    .action(async () => {
       console.log(`List meetings`);
-      result = await sendRequest( () => {axios.get(`/meetings`)} );
+      result = await sendRequest( () => {return axios.get(`/meetings`)} );
       console.log(result.data)
    })
 
@@ -73,7 +73,7 @@ meetings.command('get')
    .argument('<meeting_id>', 'id of the meeting')
    .action(async (meeting_id) => {
       console.log(`Get meeting ${meeting_id}`);
-      result = await sendRequest( () => {axios.get(`/meetings/${meeting_id}?type=upcoming&page_size=20`)} );
+      result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}?type=upcoming&page_size=20`)} );
       console.log(result.data);
    })
 
@@ -89,7 +89,7 @@ attendees.command('single')
    .action(async (meeting_id, email, first_name, last_name) => {
       console.log(`import ${first_name} ${last_name} <${email}> into meeting ${meeting_id}`);
       result = await sendRequest( () => {
-         axios.post(`/meetings/${meeting_id}/registrants`, {
+         return axios.post(`/meetings/${meeting_id}/registrants`, {
             email: email,
             first_name: first_name,
             last_name: last_name,
@@ -106,7 +106,7 @@ attendees.command('batch')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
       let csv_data = neatCsv(attendee_csv)
-      let result = await sendRequest( () => {axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data)} );
+      let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data)} );
       console.log(result.data);
    });
 
