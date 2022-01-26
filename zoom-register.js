@@ -40,7 +40,6 @@ function generateJWT(appconfig, payload = {}) {
       notBefore: -5,
       issuer: appconfig['api_key']
    });
-   console.log(`token: ${token}`)
    return token;
 }
 
