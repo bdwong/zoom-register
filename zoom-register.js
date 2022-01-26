@@ -18,7 +18,7 @@ function generateJWT(appconfig, payload = {}) {
    let token = jwt.sign(payload, appconfig['api_secret'], {
       algorithm: 'HS256',
       expiresIn: 30,
-      notBefore: 0,
+      notBefore: -5,
       issuer: appconfig['api_key']
    });
    console.log(`token: ${token}`)
