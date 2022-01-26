@@ -61,8 +61,8 @@ meetings.command('get')
 const attendees = program.command('attendees')
    .description('operate on meeting attendees');
 
-attendees.command('register')
-   .description('register attendees for meeting')
+attendees.command('single')
+   .description('register single attendee for meeting')
    .argument('<meeting_id>', 'id of the meeting')
    .argument('<email>', 'attendee email address')
    .argument('<first_name>', 'first name of attendee')
@@ -78,7 +78,7 @@ attendees.command('register')
       console.log(result.data);
    });
 
-attendees.command('batch-register')
+attendees.command('batch')
    .description('batch register attendees for meeting')
    .argument('<meeting_id>', 'id of the meeting')
    .argument('<attendee_csv>', 'CSV filename containing list of attendee email, first_name, last_name')
