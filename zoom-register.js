@@ -114,9 +114,18 @@ attendees.command('list')
    .description('list meeting registrants and links')
    .argument('<meeting_id>', 'id of the meeting')
    .action(async (meeting_id) => {
+      let result;
       console.log(`list registrants for meeting ${meeting_id}`);
-      let result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300`)} );
-      console.log(result.data);
+
+      result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=approved`)} );
+      if (result.data.registrants) {
+         console.log('Approved registrants:');
+         result.data.registrants.forEach(e => {
+            console.log(`${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
+         })
+      } else {
+         console.log(result.data);
+      }
    });
 
 // Set request defaults
