@@ -1,2 +1,4 @@
 /node_modules/
 /appconfig.json
+*.csv
+!*.sample.csv
