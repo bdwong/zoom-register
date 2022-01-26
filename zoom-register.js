@@ -101,7 +101,8 @@ attendees.command('single')
             email: email,
             first_name: first_name,
             last_name: last_name,
-            status: 'approved'
+            status: 'approved',
+            auto_approve: true
          })
       });
       console.log(result.data);
@@ -115,7 +116,10 @@ attendees.command('batch')
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
       const csv = fs.readFileSync(attendee_csv, 'utf8');
       let csv_data = neatCsv(csv)
-      let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data)} );
+      let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, {
+         auto_approve: true,
+         registrants: csv_data
+      })} );
       console.log(result.data);
    });
 
