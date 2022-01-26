@@ -66,15 +66,14 @@ meetings.command('list')
    .action(async (user_id) => {
       console.log(`List meetings`);
       result = await sendRequest( () => {return axios.get(`/users/${user_id}/meetings`)} );
-      // if (result.data.meetings) {
-      //    console.log('Approved registrants:');
-      //    result.data.registrants.forEach(e => {
-      //       console.log(`${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
-      //    })
-      // } else {
-      //    console.log(result.data);
-      // }
-      console.log(result.data);
+      if (result.data.meetings) {
+         //console.log('Approved registrants:');
+         result.data.meetings.filter(m => m.type == 2).forEach(e => {
+            console.log(`id: ${e.id} @ ${e.start_time}, ${e.topic}`);
+         })
+      } else {
+         console.log(result.data);
+      }
    })
 
 meetings.command('get')
