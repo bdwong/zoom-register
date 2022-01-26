@@ -1,6 +1,9 @@
 const { Command, CommanderError, Argument } = require('commander');
 const fs = require('fs');
 const neatCsv = require('neat-csv');
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
+const { memoryUsage } = require('process');
 
 // Read app configuration
 const appconfig = JSON.parse(fs.readFileSync('appconfig.json'));
@@ -9,6 +12,27 @@ const appconfig = JSON.parse(fs.readFileSync('appconfig.json'));
 function getRegistrants(filename) {
    const csv = fs.readFileSync(filename, 'utf8');
    return neatCsv(csv);
+}
+
+function generateJWT(appconfig, payload = {}) {
+   let token = jwt.sign(payload, appconfig['api_secret'], {
+      algorithm: 'HS256',
+      expiresIn: 30,
+      notBefore: 0,
+      issuer: appconfig['api_key']
+   });
+   console.log(`token: ${token}`)
+   return token;
+}
+
+function requestHeaders(appconfig) {
+   let token = generateJWT(appconfig);
+   let headers = {
+      'User-Agent': 'Zoom-Jwt-Request',
+      'Authorization': `bearer ${token}`,
+      'Accepts': 'application/json'
+   }
+   return headers;
 }
 
 const program = new Command();
@@ -21,6 +45,8 @@ meetings.command('list')
    .description('list names and ids of upcoming meetings')
    .action(async () => {
       console.log(`List meetings`);
+      result = await axios.get(`/meetings`);
+      console.log(result.data)
    })
 
 meetings.command('get')
@@ -28,6 +54,8 @@ meetings.command('get')
    .argument('<meeting_id>', 'id of the meeting')
    .action(async (meeting_id) => {
       console.log(`Get meeting ${meeting_id}`);
+      result = await axios.get(`/meetings/${meeting_id}?type=upcoming&page_size=20`);
+      console.log(result.data);
    })
 
 const attendees = program.command('attendees')
@@ -40,5 +68,11 @@ attendees.command('register')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
    });
+
+
+// Set request defaults
+axios.defaults.baseURL = appconfig['base_url'];
+axios.defaults.headers.common = requestHeaders(appconfig);
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 program.parse(process.argv);
