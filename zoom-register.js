@@ -113,7 +113,8 @@ attendees.command('batch')
    .argument('<attendee_csv>', 'CSV filename containing list of attendee email, first_name, last_name')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
-      let csv_data = neatCsv(attendee_csv)
+      const csv = fs.readFileSync(attendee_csv, 'utf8');
+      let csv_data = neatCsv(csv)
       let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data)} );
       console.log(result.data);
    });
