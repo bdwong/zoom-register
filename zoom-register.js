@@ -64,9 +64,29 @@ const attendees = program.command('attendees')
 attendees.command('register')
    .description('register attendees for meeting')
    .argument('<meeting_id>', 'id of the meeting')
+   .argument('<email>', 'attendee email address')
+   .argument('<first_name>', 'first name of attendee')
+   .argument('<last_name>', 'last name of attendee')
+   .action(async (meeting_id, email, first_name, last_name) => {
+      console.log(`import ${first_name} ${last_name} <${email}> into meeting ${meeting_id}`);
+      result = await axios.post(`/meetings/${meeting_id}/registrants`, {
+         email: email,
+         first_name: first_name,
+         last_name: last_name,
+         status: 'approved'
+      });
+      console.log(result.data);
+   });
+
+attendees.command('batch-register')
+   .description('batch register attendees for meeting')
+   .argument('<meeting_id>', 'id of the meeting')
    .argument('<attendee_csv>', 'CSV filename containing list of attendee email, first_name, last_name')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
+      let csv_data = neatCsv(attendee_csv)
+      let result = await axios.post(`/meetings/${meeting_id}/batch_registrants`, csv_data);
+      console.log(result.data);
    });
 
 
