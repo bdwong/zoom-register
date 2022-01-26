@@ -61,11 +61,11 @@ const meetings = program.command('meetings')
 
 meetings.command('list')
    .description('list names and ids of upcoming (non-recurring) meetings')
-   .argument('<user_id>', 'id or email of user to query')
+   .argument('<email_or_user_id>', 'email or id of user to query')
 
-   .action(async (user_id) => {
+   .action(async (email_or_user_id) => {
       console.log(`List meetings`);
-      result = await sendRequest( () => {return axios.get(`/users/${user_id}/meetings`)} );
+      result = await sendRequest( () => {return axios.get(`/users/${email_or_user_id}/meetings`)} );
       if (result.data.meetings) {
          //console.log('Approved registrants:');
          result.data.meetings.filter(m => m.type == 2).forEach(e => {
