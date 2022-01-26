@@ -119,18 +119,36 @@ attendees.command('batch')
       console.log(result.data);
    });
 
-attendees.command('list')
-   .description('list meeting registrants and links')
+attendees.command('approved')
+   .description('list approved registrants and links for meeting')
    .argument('<meeting_id>', 'id of the meeting')
    .action(async (meeting_id) => {
       let result;
-      console.log(`list registrants for meeting ${meeting_id}`);
+      console.log(`list APPROVED registrants for meeting ${meeting_id}`);
 
       result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=approved`)} );
       if (result.data.registrants) {
          console.log('Approved registrants:');
          result.data.registrants.forEach(e => {
             console.log(`${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
+         })
+      } else {
+         console.log(result.data);
+      }
+   });
+
+   attendees.command('pending')
+   .description('list registrants pending approval for meeting')
+   .argument('<meeting_id>', 'id of the meeting')
+   .action(async (meeting_id) => {
+      let result;
+      console.log(`list PENDING registrants for meeting ${meeting_id}`);
+
+      result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=pending`)} );
+      if (result.data.registrants) {
+         console.log('Pending registrants:');
+         result.data.registrants.forEach(e => {
+            console.log(`${e.first_name} ${e.last_name} <${e.email}>`);
          })
       } else {
          console.log(result.data);
