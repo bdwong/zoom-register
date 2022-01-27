@@ -2,6 +2,12 @@
 
 Register meeting attendees to a Zoom meeting from a CSV file.
 
+## Installation
+
+Requires Node.js. Known working on Node 14+.
+
+Clone the repository and run `npm install` to install dependencies.
+
 ## Configuration
 
 Copy the `appconfig.sample.json` to `appconfig.json` and edit. You can find your Zoom JWT key and secret by logging into the [Zoom developer portal](https://developers.zoom.us/) with developer or admin permissions. If you do not have a key and secret, you can generate one by creating a JWT application in Zoom. See the developer documentation for more details.
