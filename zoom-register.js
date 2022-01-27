@@ -53,6 +53,17 @@ function requestHeaders(appconfig) {
    return headers;
 }
 
+// Chunk an array and perform operations on it.
+// Credits to: https://stackoverflow.com/questions/8495687/split-array-into-chunks
+async function in_chunks(array, chunk, func) {
+   let i,j, temporary;
+   for (i = 0,j = array.length; i < j; i += chunk) {
+      temporary = array.slice(i, i + chunk);
+      await func(temporary);
+   }
+}
+
+
 const program = new Command();
 program.version('0.1.0');
 
@@ -115,13 +126,17 @@ attendees.command('batch')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
       const csv = fs.readFileSync(attendee_csv, 'utf8');
-      let csv_data = await neatCsv(csv);
-      csv_data = csv_data.map((r) => { return {email: r.email, first_name: r.first_name, last_name: r.last_name} });
-      let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, {
-         auto_approve: appconfig['auto_approve'],
-         registrants: csv_data
-      })} );
-      console.log(result.data);
+      let parsed = await neatCsv(csv);
+      // NOTE: Max number of bulk registrants is 30.
+      in_chunks(parsed, 30, async(csv_data) => {
+         csv_data = csv_data.map((r) => { return {email: r.email, first_name: r.first_name, last_name: r.last_name} });
+         let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, {
+            auto_approve: appconfig['auto_approve'],
+            registrants: csv_data
+         })} );
+         console.log(result.data);
+      });
+
    });
 
 attendees.command('approved')
