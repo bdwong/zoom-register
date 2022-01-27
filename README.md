@@ -10,7 +10,8 @@ Copy the `appconfig.sample.json` to `appconfig.json` and edit. You can find your
 {
    "base_url": "https://api.zoom.us/v2",
    "api_key": "YOUR_JWT_API_KEY_HERE",
-   "api_secret": "YOUR_JWT_SECRET_HERE"
+   "api_secret": "YOUR_JWT_SECRET_HERE",
+   "auto_approve": false
 }
 ```
 
