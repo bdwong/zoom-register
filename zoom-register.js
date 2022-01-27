@@ -102,7 +102,7 @@ attendees.command('single')
             first_name: first_name,
             last_name: last_name,
             status: 'approved',
-            auto_approve: true
+            auto_approve: appconfig['auto_approve']
          })
       });
       console.log(result.data);
@@ -118,7 +118,7 @@ attendees.command('batch')
       let csv_data = await neatCsv(csv);
       csv_data = csv_data.map((r) => { return {email: r.email, first_name: r.first_name, last_name: r.last_name} });
       let result = await sendRequest( () => {return axios.post(`/meetings/${meeting_id}/batch_registrants`, {
-         auto_approve: true,
+         auto_approve: appconfig['auto_approve'],
          registrants: csv_data
       })} );
       console.log(result.data);

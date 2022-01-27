@@ -38,6 +38,12 @@ Run `zoom-register attendees single` to register a single user.
 node zoom-register attendees single 12345678 registrant@example.com Firstname Lastname
 ```
 
+By default, registered users will be in a 'pending' state, and will need to be manually approved.
+
+***NOTE: If you register attendees with auto-approve set to true, then newly registered attendees will not receive a confirmation email.*** Auto-approve is configurable in `appconfig.json` and is set to false by default.
+
+
+
 ### Batch Register Users
 
 To register a batch of attendees, prepare a CSV (Comma Separated Value) file as follows. The first line is required as a CSV header. Subsequent lines are for registrant data, one line per registrant:
@@ -53,6 +59,10 @@ Then run `zoom-register` to perform batch registration:
 ```sh
 node zoom-register attendees batch 12345678 attendees.csv
 ```
+
+By default, registered users will be in a 'pending' state, and will need to be manually approved.
+
+***NOTE: If you register attendees with auto-approve set to true, then newly registered attendees will not receive a confirmation email.*** Auto-approve is configurable in `appconfig.json` and is set to false by default.
 
 ## Notes
 
