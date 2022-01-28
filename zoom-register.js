@@ -152,12 +152,25 @@ attendees.command('list')
    result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=${status}`)} );
    if (result.data.registrants) {
       result.data.registrants.forEach(e => {
-         console.log(`${e.status} ${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
+         console.log(`${e.id} ${e.status} ${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
       })
    } else {
       console.log(result.data);
    }
 });
+
+attendees.command('delete')
+   .description('delete single attendee from meeting')
+   .argument('<meeting_id>', 'id of the meeting')
+   .argument('<registrant_id>', 'attendee id. List registrants to find it.')
+   .action(async (meeting_id, registrant_id) => {
+      console.log(`delete ${registrant_id} from meeting ${meeting_id}`);
+      result = await sendRequest( () => {
+         return axios.delete(`/meetings/${meeting_id}/registrants/${registrant_id}`)
+      });
+      console.log(result.data);
+   });
+
 
 // Set request defaults
 axios.defaults.baseURL = appconfig['base_url'];
