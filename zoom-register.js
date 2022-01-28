@@ -139,41 +139,25 @@ attendees.command('batch')
 
    });
 
-attendees.command('approved')
-   .description('list approved registrants and links for meeting')
-   .argument('<meeting_id>', 'id of the meeting')
-   .action(async (meeting_id) => {
-      let result;
-      console.log(`list APPROVED registrants for meeting ${meeting_id}`);
+attendees.command('list')
+.description('list meeting registrants with given status (approved, pending, denied)')
+.argument('<meeting_id>', 'id of the meeting')
+.addArgument(
+   new Argument('<status>', 'status to filter')
+   .choices(['approved', 'pending', 'denied'])
+).action(async (meeting_id, status) => {
+   let result;
+   console.log(`list ${status} registrants for meeting ${meeting_id}`);
 
-      result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=approved`)} );
-      if (result.data.registrants) {
-         console.log('Approved registrants:');
-         result.data.registrants.forEach(e => {
-            console.log(`${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
-         })
-      } else {
-         console.log(result.data);
-      }
-   });
-
-   attendees.command('pending')
-   .description('list registrants pending approval for meeting')
-   .argument('<meeting_id>', 'id of the meeting')
-   .action(async (meeting_id) => {
-      let result;
-      console.log(`list PENDING registrants for meeting ${meeting_id}`);
-
-      result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=pending`)} );
-      if (result.data.registrants) {
-         console.log('Pending registrants:');
-         result.data.registrants.forEach(e => {
-            console.log(`${e.first_name} ${e.last_name} <${e.email}>`);
-         })
-      } else {
-         console.log(result.data);
-      }
-   });
+   result = await sendRequest( () => {return axios.get(`/meetings/${meeting_id}/registrants?page_size=300&status=${status}`)} );
+   if (result.data.registrants) {
+      result.data.registrants.forEach(e => {
+         console.log(`${e.status} ${e.first_name} ${e.last_name} <${e.email}>, ${e.join_url}`);
+      })
+   } else {
+      console.log(result.data);
+   }
+});
 
 // Set request defaults
 axios.defaults.baseURL = appconfig['base_url'];
