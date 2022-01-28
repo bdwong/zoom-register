@@ -1,16 +1,14 @@
 const { Command, CommanderError, Argument } = require('commander');
-const fs = require('fs');
+const { mkdirSync, readFileSync, copyFileSync } = require('fs');
 const neatCsv = require('neat-csv');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const { memoryUsage } = require('process');
-
-// Read app configuration
-const appconfig = JSON.parse(fs.readFileSync('appconfig.json'));
+const path = require('path');
 
 // Read meeting registrants
 function getRegistrants(filename) {
-   const csv = fs.readFileSync(filename, 'utf8');
+   const csv = readFileSync(filename, 'utf8');
    return neatCsv(csv);
 }
 
@@ -61,6 +59,45 @@ async function in_chunks(array, chunk, func) {
       temporary = array.slice(i, i + chunk);
       await func(temporary);
    }
+}
+
+function config_dir() {
+   const path = require('path');
+   const os = require('os');
+   return path.join(os.homedir(), '.config', 'zoom-register');
+}
+
+function config_filepath() {
+   return path.join(config_dir(), 'appconfig.json');
+}
+
+function config_template_path() {
+   return path.join(__dirname, 'appconfig.sample.json');
+}
+
+function configure() {
+   mkdirSync(config_dir(), {recursive: true})
+   let src = config_template_path();
+   let dst = config_filepath();
+
+   console.log(`Copying template config to ${dst}`);
+   copyFileSync(src, dst);
+}
+
+// Read app configuration
+function readAppConfig() {
+   let config_data;
+   try {
+      config_data = JSON.parse(readFileSync(config_filepath()));
+   } catch(err) {
+      configure();
+   }
+   if (!config_data || config_data.api_key == 'YOUR_JWT_API_KEY_HERE' || config_data.api_secret == 'YOUR_JWT_SECRET_HERE') {
+      console.log(`Please edit ${config_filepath()} to include your Zoom API key and secret.`);
+      console.log('See https://github.com/bdwong/zoom-register#readme for more information.');
+      process.exit(2);
+   }
+   return config_data;
 }
 
 
@@ -125,7 +162,7 @@ attendees.command('batch')
    .argument('<attendee_csv>', 'CSV filename containing list of attendee email, first_name, last_name')
    .action(async (meeting_id, attendee_csv) => {
       console.log(`import ${attendee_csv} into meeting ${meeting_id}`);
-      const csv = fs.readFileSync(attendee_csv, 'utf8');
+      const csv = readFileSync(attendee_csv, 'utf8');
       let parsed = await neatCsv(csv);
       // NOTE: Max number of bulk registrants is 30.
       in_chunks(parsed, 30, async(csv_data) => {
@@ -174,6 +211,7 @@ attendees.command('delete')
       }
    });
 
+const appconfig = readAppConfig();
 
 // Set request defaults
 axios.defaults.baseURL = appconfig['base_url'];
