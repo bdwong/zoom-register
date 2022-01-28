@@ -169,6 +169,9 @@ attendees.command('delete')
          return axios.delete(`/meetings/${meeting_id}/registrants/${registrant_id}`)
       });
       console.log(result.data);
+      if (result.status && result.status == 204) {
+         console.log('Deleted successfully.');
+      }
    });
 
 
