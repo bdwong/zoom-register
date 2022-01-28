@@ -2,3 +2,4 @@
 /appconfig.json
 *.csv
 !*.sample.csv
+/build/

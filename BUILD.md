@@ -7,5 +7,5 @@ npm install -g pkg
 Then build it:
 
 ```sh
-pkg .
+npm run build
 ```
