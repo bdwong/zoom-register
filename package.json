@@ -1,13 +1,24 @@
 {
   "name": "zoom-register",
-  "version": "0.0.1",
-  "description": "Register meeting attendees from a csv file.",
+  "version": "0.1.0",
+  "description": "Register and manage Zoom meeting attendees.",
   "main": "zoom-register.js",
+  "bin": {
+    "zoom-register": "./zoom-register.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdwong/zoom-register.git"
+  },
   "author": "Brian D. Wong",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bdwong/zoom-register/issues"
+  },
+  "homepage": "https://github.com/bdwong/zoom-register#readme",
   "dependencies": {
     "axios": "^0.25.0",
     "commander": "^8.3.0",
