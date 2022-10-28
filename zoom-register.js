@@ -4,7 +4,8 @@ const neatCsv = require('neat-csv');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const { memoryUsage } = require('process');
-const { appconfig, editConfig } = require('./lib/config');
+const { copyConfig, editConfig } = require('./lib/config');
+let { appconfig } = require('./lib/config');
 
 // Read meeting registrants
 function getRegistrants(filename) {
@@ -67,7 +68,13 @@ program.version('0.1.0');
 
 const configure = program.command('configure')
    .description(`Configure program for use`)
-   .action(async () => { await editConfig(appconfig) })
+   .option('-r, --reset', 'Reset the configuration file')
+   .action(async (options) => {
+      if (options.reset) {
+         appconfig = copyConfig(appconfig);
+      }
+      await editConfig(appconfig);
+   })
 
 const meetings = program.command('meetings')
    .description('operate on meetings')
