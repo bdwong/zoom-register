@@ -1,6 +1,6 @@
 {
   "name": "zoom-register",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Register and manage Zoom meeting attendees.",
   "main": "zoom-register.js",
   "bin": {
