@@ -181,4 +181,10 @@ axios.defaults.baseURL = appconfig['base_url'];
 axios.defaults.headers.common = requestHeaders(appconfig);
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-program.parse(process.argv);
+(async function main() {
+   if (!appconfig || appconfig.api_key == 'YOUR_JWT_API_KEY_HERE' || appconfig.api_secret == 'YOUR_JWT_SECRET_HERE') {
+      await editConfig(appconfig);
+   }
+
+   await program.parseAsync(process.argv);
+})();
