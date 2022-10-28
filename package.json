@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pkg --out-path build/ ."
+    "build": "pkg ."
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,12 @@
     "url": "https://github.com/bdwong/zoom-register/issues"
   },
   "homepage": "https://github.com/bdwong/zoom-register#readme",
+  "pkg": {
+    "assets": [
+      "appconfig.sample.json"
+    ],
+    "outputPath": "build"
+  },
   "dependencies": {
     "axios": "^0.25.0",
     "commander": "^8.3.0",
