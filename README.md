@@ -30,7 +30,7 @@ Use the desired meeting id for subsequent registration commands.
 
 ### Register Single User
 
-Run `zoom-register attendees single` to register a single user.
+Run `zoom-register attendees single` to register a single user. This command can also be used to correct the name of a registrant in the 'pending' state.
 
 ```sh
 zoom-register attendees single 12345678 registrant@example.com Firstname Lastname
@@ -47,7 +47,7 @@ By default, registered users will be in a 'pending' state, and will need to be m
 To register a batch of attendees, prepare a CSV (Comma Separated Value) file as follows. The first line is required as a CSV header. Subsequent lines are for registrant data, one line per registrant:
 
 ```csv
-"firstName","lastName","email"
+"first_name","last_name","email"
 "First1","Last1","first1.last1@example.com"
 "First2","Last2","first2.last2@example.com"
 ```
